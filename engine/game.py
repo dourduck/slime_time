@@ -43,6 +43,24 @@ class Game:
             )
         #### END RENDER TEST
 
+        #### Kind test
+        ent: wor.Entity = world.entities[world.entity_tag_tile.pop()]
+        kind = wor.EntityKind.TILE
+        kind |= wor.EntityKind.ENEMY
+        ent.set_kind(kind)
+
+        for eid in world.entity_tag_tile:
+            print(f"tile entity id: {eid}")
+        for eid in world.entity_tag_enemy:
+            print(f"enemy entity id: {eid}")
+        ####
+
+        #### data mutation via tag test
+        idx = list((world.entity_tag_tile.intersection(world.entity_tag_enemy)))
+        world.position_x[idx] -= 400
+        world.position_y[idx] -= 200
+        ####
+
         while not pr.window_should_close():
             inp.pull_input(input_state)
 

@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-# import world as wor
-# import pyray as pr
-
 import input as inp
 import world as wor
 import render as ren

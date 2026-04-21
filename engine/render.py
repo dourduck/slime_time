@@ -92,36 +92,5 @@ class Renderer:
         pr.set_target_fps(60)
         pr.set_exit_key(exit_key)
 
-        ####
-
-        """
-        texture data class?
-        just pass the renderer instance
-
-        """
-
-        # tex_tile_grass_id = self.load_texture("../art/iso_tile_grass.png")
-        #
-        # desired_tile_w = 128
-        # tile_src_w = 32
-        # tile_src_h = 32
-        # tile_src_x = 1
-        # tile_src_y = 1
-        # tile_scale = desired_tile_w / tile_src_w
-        # tile_tex_id = tex_tile_grass_id
-        #
-        # for i in range(4):
-        #     tile_entity = wrld.create_tile_entity()
-        #     pos_x = int(i * (tile_src_w * tile_scale))
-        #     pos_y = 0
-        #
-        #     tile_entity.assign_texture_id(wrld, tile_tex_id)
-        #     tile_entity.assign_position(wrld, pos_x, pos_y)
-        #     tile_entity.assign_scale(wrld, tile_scale)
-        #     tile_entity.assign_src_rect(
-        #         wrld, tile_src_x, tile_src_y, tile_src_w, tile_src_h
-        #     )
-        ####
-
 
 ####

@@ -34,9 +34,18 @@ class Entity:
         self.world.src_w[self.id] = w
         self.world.src_h[self.id] = h
 
+    def set_kind(self, kind: EntityKind):
+        if kind & EntityKind.PLAYER:
+            self.world.entity_tag_player.add(self.id)
+        if kind & EntityKind.ENEMY:
+            self.world.entity_tag_enemy.add(self.id)
+        if kind & EntityKind.TILE:
+            self.world.entity_tag_tile.add(self.id)
+
 
 class World:
     def __init__(self):
+        self.entities: dict[int, Entity] = dict()
         self.position_x = np.zeros(MAX_ENTITIES, dtype=np.float32)
         self.position_y = np.zeros(MAX_ENTITIES, dtype=np.float32)
         self.velocity_x = np.zeros(MAX_ENTITIES, dtype=np.float32)
@@ -52,9 +61,9 @@ class World:
 
         self.count = 0
 
-        self.enemy_bucket = set()
-        self.tile_bucket = set()
-        self.player_bucket = set()
+        self.entity_tag_enemy: set[int] = set()
+        self.entity_tag_tile: set[int] = set()
+        self.entity_tag_player: set[int] = set()
 
     def create_entity(self, kind: EntityKind) -> Entity:
         id = self.count
@@ -64,17 +73,11 @@ class World:
         if self.count == MAX_ENTITIES:
             print("REACHED ENTITY MAXIMUM!!!")
 
-        if kind & EntityKind.PLAYER:
-            # of player kind
-            self.player_bucket.add(id)
-        elif kind & EntityKind.ENEMY:
-            # of enemy kind
-            self.enemy_bucket.add(id)
-        elif kind & EntityKind.TILE:
-            # of tile kind
-            self.tile_bucket.add(id)
+        entity = Entity(id, self)
+        entity.set_kind(kind)
+        self.entities[id] = entity
 
-        return Entity(id, self)
+        return entity
 
     def create_tile_entity(self) -> Entity:
         entity = self.create_entity(EntityKind.TILE)
