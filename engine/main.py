@@ -5,13 +5,19 @@ import input as inp
 import world as wor
 import render as ren
 import game as gam
+import global_state as glb
 
 
 def main():
     world = wor.World()
-    input_state = inp.InputState()
     renderer = ren.Renderer()
-    game = gam.Game(world=world, input_state=input_state, renderer=renderer)
+    input_state = inp.InputState()
+
+    global_state = glb.GlobalState(
+        world=world, renderer=renderer, input_state=input_state
+    )
+
+    game = gam.Game(global_state)
     game.loop()
 
 

@@ -12,22 +12,21 @@ class InputState:
     pressed_key_s: bool = field(default_factory=bool)
     pressed_key_a: bool = field(default_factory=bool)
 
+    def pull_input(self):
+        current_key_pressed = pr.get_key_pressed()
 
-def pull_input(state: InputState):
-    current_key_pressed = pr.get_key_pressed()
+        key_w = pr.KeyboardKey.KEY_W
+        key_d = pr.KeyboardKey.KEY_D
+        key_s = pr.KeyboardKey.KEY_S
+        key_a = pr.KeyboardKey.KEY_A
 
-    key_w = pr.KeyboardKey.KEY_W
-    key_d = pr.KeyboardKey.KEY_D
-    key_s = pr.KeyboardKey.KEY_S
-    key_a = pr.KeyboardKey.KEY_A
+        self.pressed_key_w = current_key_pressed == key_w
+        self.pressed_key_d = current_key_pressed == key_d
+        self.pressed_key_s = current_key_pressed == key_s
+        self.pressed_key_a = current_key_pressed == key_a
 
-    state.pressed_key_w = current_key_pressed == key_w
-    state.pressed_key_d = current_key_pressed == key_d
-    state.pressed_key_s = current_key_pressed == key_s
-    state.pressed_key_a = current_key_pressed == key_a
-
-    state.mouse_position_x = pr.get_mouse_x()
-    state.mouse_position_y = pr.get_mouse_y()
+        self.mouse_position_x = pr.get_mouse_x()
+        self.mouse_position_y = pr.get_mouse_y()
 
 
 # def tile_mouse_input(
