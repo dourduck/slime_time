@@ -11,3 +11,4 @@
 - [ ] Better full screen
 - [ ] Organize code
 
+- [ ] debug for tile positons
