@@ -29,8 +29,11 @@ class Renderer:
             pr.unload_texture(tex)
 
     def draw_textures(self, wrld: wor.World):
-        order = np.argsort(wrld.texture_id[: wrld.count])
-        for id in order:
+        count = wrld.count
+        depth = wrld.position_y[:count]
+        indices = np.argsort(depth)
+
+        for id in indices:
             tid = wrld.texture_id[id]
             tex = self.textures[tid]
 
@@ -57,6 +60,7 @@ class Renderer:
                 rotation,
                 pr.WHITE,
             )  # type: ignore
+            # pr.draw_circle(int(dest.x + 90), int(dest.y + 45), 8, pr.RED)
 
     def render_system(
         self,
@@ -70,6 +74,12 @@ class Renderer:
         self.draw_textures(wrld)
 
         pr.end_mode_2d()
+        # pr.draw_circle(
+        #     (self.config.screen_w // 2),
+        #     (self.config.screen_h // 2),
+        #     4,
+        #     pr.BLUE,
+        # )
 
         pr.end_drawing()
 

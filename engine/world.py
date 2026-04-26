@@ -3,7 +3,7 @@ import numpy as np
 from enum import Flag, auto
 from dataclasses import dataclass
 
-MAX_ENTITIES = 1024
+MAX_ENTITIES = 4096
 
 
 class Tags(Flag):
