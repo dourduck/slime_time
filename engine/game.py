@@ -1,8 +1,7 @@
 import global_state as glb
-
 import world as wor
-
 import pyray as pr
+import numpy as np
 
 
 class Game:
@@ -20,6 +19,9 @@ class Game:
 
         #### RENDER TEST
         tile_tex_grass_id = renderer.load_texture("../art/iso_tile_grass.png")
+
+        # slime_anim = renderer.load_texture("../art/slime_anim.png")  # (16x16) 4 frames
+        # slime_anim_scale = 128 / 16  #  = 8
 
         desired_tile_w = 128
         tile_src_w = 32
@@ -41,22 +43,23 @@ class Game:
             )
         #### END RENDER TEST
 
-        #### Kind test
-        ent: wor.Entity = world.entities[world.entity_tag_tile.pop()]
-        kind = wor.EntityKind.TILE
-        kind |= wor.EntityKind.ENEMY
-        ent.set_kind(kind)
-
-        for eid in world.entity_tag_tile:
-            print(f"tile entity id: {eid}")
-        for eid in world.entity_tag_enemy:
-            print(f"enemy entity id: {eid}")
-        ####
-
         #### data mutation via tag test
-        idx = list((world.entity_tag_tile.intersection(world.entity_tag_enemy)))
-        world.position_x[idx] -= 400
-        world.position_y[idx] -= 200
+        entity_tile_mask = wor.has_flags(world.entity_tags, wor.Tags.TILE)
+        entity_tile_ids = np.flatnonzero(entity_tile_mask)
+        if len(entity_tile_ids):
+            world.entity_tags[entity_tile_ids[0]] |= wor.Tags.ENEMY.value
+
+            entity_tile_enemy_mask = wor.has_flags(
+                world.entity_tags, (wor.Tags.TILE | wor.Tags.ENEMY)
+            )
+            entity_tile_enemy_ids = np.flatnonzero(entity_tile_enemy_mask)
+
+            for eid in entity_tile_ids:
+                print(f"tile entity id: {eid}")
+            for eid in entity_tile_enemy_ids:
+                print(f"tile+enemy entity id: {eid}")
+                world.position_x[eid] -= 400
+                world.position_y[eid] -= 200
         ####
 
         while not pr.window_should_close():

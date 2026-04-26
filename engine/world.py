@@ -1,16 +1,22 @@
 from __future__ import annotations
 import numpy as np
-from enum import IntFlag
+from enum import Flag, auto
 from dataclasses import dataclass
 
 MAX_ENTITIES = 1024
 
 
-class EntityKind(IntFlag):
-    NONE = 0
-    PLAYER = 1 << 0
-    ENEMY = 1 << 1
-    TILE = 1 << 2
+class Tags(Flag):
+    PLAYER = auto()  # 1
+    ENEMY = auto()  # 2
+    UNDEAD = auto()  # 4  # just as an example
+    TILE = auto()  # 8
+
+
+# Returns a masked result from the given ndarray. #
+def has_flags(arr: np.ndarray, flags: Tags) -> np.ndarray:
+    v = flags.value
+    return (arr & v) == v
 
 
 @dataclass(frozen=True)
@@ -34,18 +40,13 @@ class Entity:
         self.world.src_w[self.id] = w
         self.world.src_h[self.id] = h
 
-    def set_kind(self, kind: EntityKind):
-        if kind & EntityKind.PLAYER:
-            self.world.entity_tag_player.add(self.id)
-        if kind & EntityKind.ENEMY:
-            self.world.entity_tag_enemy.add(self.id)
-        if kind & EntityKind.TILE:
-            self.world.entity_tag_tile.add(self.id)
+    def set_tags(self, tags: Tags):
+        self.world.entity_tags[self.id] = tags.value
 
 
 class World:
     def __init__(self):
-        self.entities: dict[int, Entity] = dict()
+        # self.entities: dict[int, Entity] = dict()
         self.position_x = np.zeros(MAX_ENTITIES, dtype=np.float32)
         self.position_y = np.zeros(MAX_ENTITIES, dtype=np.float32)
         self.velocity_x = np.zeros(MAX_ENTITIES, dtype=np.float32)
@@ -61,11 +62,9 @@ class World:
 
         self.count = 0
 
-        self.entity_tag_enemy: set[int] = set()
-        self.entity_tag_tile: set[int] = set()
-        self.entity_tag_player: set[int] = set()
+        self.entity_tags = np.zeros(MAX_ENTITIES, dtype=np.uint8)
 
-    def create_entity(self, kind: EntityKind) -> Entity:
+    def create_entity(self, tags: Tags) -> Entity:
         id = self.count
 
         self.count += 1
@@ -74,11 +73,11 @@ class World:
             print("REACHED ENTITY MAXIMUM!!!")
 
         entity = Entity(id, self)
-        entity.set_kind(kind)
-        self.entities[id] = entity
+        entity.set_tags(tags)
+        # self.entities[id] = entity
 
         return entity
 
     def create_tile_entity(self) -> Entity:
-        entity = self.create_entity(EntityKind.TILE)
+        entity = self.create_entity(Tags.TILE)
         return entity
