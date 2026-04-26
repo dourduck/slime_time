@@ -1,24 +1,22 @@
 #!/usr/bin/env python3
-from __future__ import annotations
-
-import input as inp
-import world as wor
-import render as ren
-import game as gam
-import global_state as glb
+from input import InputState
+from world import World
+from render import Renderer
+from global_state import GlobalState
+from game import Game
 
 
 def main():
-    world = wor.World()
-    renderer = ren.Renderer()
-    input_state = inp.InputState()
+    _world = World()
+    _renderer = Renderer()
+    _input_state = InputState()
 
-    global_state = glb.GlobalState(
-        world=world, renderer=renderer, input_state=input_state
+    _global_state = GlobalState(
+        world=_world, renderer=_renderer, input_state=_input_state
     )
 
-    game = gam.Game(global_state)
-    game.loop()
+    _game = Game(_global_state)
+    _game.loop()
 
 
 if __name__ == "__main__":
