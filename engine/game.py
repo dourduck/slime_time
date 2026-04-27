@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 import global_state as glb
 import pyray as pr
 import asset
@@ -36,10 +37,6 @@ class Game:
         assets = asset.Assets()
         path_tile_grass = assets.get_path(asset.AssetID.TEX_TILE_GRASS)
         tile_tex_grass_id = renderer.load_texture(path_tile_grass)
-
-        # path_anim_slime = assets.get_path(asset.AssetID.TEX_ANIM_SLIME)
-        # slime_anim_id = renderer.load_texture(path_anim_slime)  # (16 x 16) 4 frames
-        # slime_anim_scale = 128 / 16  #  = 8
 
         #### END RENDER TEST
 
@@ -89,6 +86,28 @@ class Game:
         #         world.position_y[eid] -= 200
         ####
 
+        #### SLIME ANIM ####
+        path_anim_slime = assets.get_path(asset.AssetID.TEX_ANIM_SLIME)
+
+        # slime_anim_id = renderer.load_texture(path_anim_slime)  # (16 x 16) 4 frames
+        slime_anim = pr.load_texture(path_anim_slime)
+
+        slime_frames = list()
+        frame_width = 16
+        frame_height = 16
+        for i in range(4):
+            frame_scr = pr.Rectangle(
+                i * frame_width, frame_height, frame_width, frame_height
+            )
+            slime_frames.append(frame_scr)
+
+        slime_anim_scale = 128 / 16  #  = 8
+
+        slime_anim_timer = 0
+        slime_frame_time = 1 / 4  # milli seconds
+        current_anim_frame = 0
+        #### ##### #### ####
+
         while not pr.window_should_close():
             self.input_state.pull_input()
 
@@ -102,6 +121,30 @@ class Game:
             if input_state.pressed_key_a:
                 print("west")
             #### END INPUT TEST
+
+            #### SLIME ANIM ####
+            slime_anim_timer += pr.get_frame_time()
+
+            if slime_anim_timer >= slime_frame_time:
+                slime_anim_timer = 0
+                current_anim_frame = (current_anim_frame + 1) % len(slime_frames)
+
+            frame_src = slime_frames[current_anim_frame]
+
+            pos_x = 200
+            pos_y = 200
+
+            frame_dest = pr.Rectangle(
+                pos_x,
+                pos_y,
+                frame_src.width * slime_anim_scale,
+                frame_src.height * slime_anim_scale,
+            )
+
+            pr.draw_texture_pro(
+                slime_anim, frame_src, frame_dest, pr.Vector2(0, 0), 0, pr.WHITE
+            )
+            #### ##### #### ####
 
             renderer.render_system(world, input_state)
 
