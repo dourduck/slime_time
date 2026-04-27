@@ -1,8 +1,22 @@
 import global_state as glb
 import pyray as pr
+import asset
+
+# import numpy as np
 
 # import world as wor
-# import numpy as np
+
+
+# class TileData:
+#     grid_x: np.ndarray
+#     grid_y: np.ndarray
+#
+#     @staticmethod
+#     def tile_indices_draw_order(columns: int, rows: int):
+#         X, Y = np.meshgrid(np.arange(columns), np.arange(rows))
+#         depth = (X + Y).reshape(-1)
+#         indices = np.argsort(depth)
+#         return indices
 
 
 class Game:
@@ -19,9 +33,12 @@ class Game:
         renderer.create_raylib_window()
 
         #### RENDER TEST
-        tile_tex_grass_id = renderer.load_texture("../art/iso_tile_grass.png")
+        assets = asset.Assets()
+        path_tile_grass = assets.get_path(asset.AssetID.TEX_TILE_GRASS)
+        tile_tex_grass_id = renderer.load_texture(path_tile_grass)
 
-        # slime_anim = renderer.load_texture("../art/slime_anim.png")  # (16x16) 4 frames
+        # path_anim_slime = assets.get_path(asset.AssetID.TEX_ANIM_SLIME)
+        # slime_anim_id = renderer.load_texture(path_anim_slime)  # (16 x 16) 4 frames
         # slime_anim_scale = 128 / 16  #  = 8
 
         #### END RENDER TEST
@@ -86,6 +103,6 @@ class Game:
                 print("west")
             #### END INPUT TEST
 
-            renderer.render_system(world)
+            renderer.render_system(world, input_state)
 
         renderer.unload()
